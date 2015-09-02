@@ -26,13 +26,9 @@ instance CL.RecordCommand GenOptions where
   run' opts@(GenOptions { input = [] }) args = CL.run' opts {input = ["-"]} args
   run' opts _ = do
     outFile <- openOutFile $ out opts
-    freqs <- foldM updateFreqs Freq.empty $ input opts
-    let freqs' = Freq.incrementFromFold printableChars freqs
-    IO.hPrint outFile $ fromJust $ buildCode freqs'
+    freqs <- foldM updateFreqs Freq.fromPrintableChars $ input opts
+    IO.hPrint outFile $ fromJust $ buildCode freqs
     IO.hClose outFile
-
-printableChars :: String
-printableChars = "\t\r\n" ++ [' ' .. '~']
 
 openOutFile :: String -> IO IO.Handle
 openOutFile "-" = return IO.stdout

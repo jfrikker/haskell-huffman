@@ -7,6 +7,7 @@ module Huffman.Frequency (
   empty,
   fromFold,
   fromStream,
+  fromPrintableChars,
   incrementFromFold,
   incrementFromStream
 ) where
@@ -38,6 +39,12 @@ fromFold f = incrementFromFold f empty
 
 fromStream :: (Stream s v m, Ord v) => s -> m (FrequencyTable v)
 fromStream s = incrementFromStream s empty
+
+printableChars :: String
+printableChars = "\t\r\n" ++ [' ' .. '~']
+
+fromPrintableChars :: FrequencyTable Char
+fromPrintableChars = fromFold printableChars
 
 insertWithIncrement :: (Ord k, Num v) => k -> M.Map k v -> M.Map k v
 insertWithIncrement k = M.insertWith (+) k 1
