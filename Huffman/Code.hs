@@ -9,7 +9,7 @@ import qualified Data.PSQueue as PQ
 import Data.PSQueue (Binding(..))
 import qualified Huffman.Frequency as Freq
 
-data Code a = Leaf a | Branch (Code a) (Code a) deriving (Eq, Ord, Show)
+data Code a = Leaf a | Branch (Code a) (Code a) deriving (Eq, Ord, Show, Read)
 
 toPSQueue :: Ord v => Freq.FrequencyTable v -> PQ.PSQ v Int
 toPSQueue = PQ.fromList . map (uncurry (:->)) . M.toList

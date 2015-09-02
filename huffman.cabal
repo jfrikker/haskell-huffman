@@ -25,7 +25,7 @@ library
 
 executable hufftable
   main-is:             Huffman/Table.hs
-  build-depends:       base >=4.6 && <4.7, containers, PSQueue, boxes
+  build-depends:       base >=4.6 && <4.7, containers, PSQueue, cmdlib, boxes
 
 executable huffgen
   main-is:             Huffman/Gen.hs
