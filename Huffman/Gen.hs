@@ -25,8 +25,12 @@ instance CL.RecordCommand GenOptions where
   run' opts inPaths = do
     outFile <- openOutFile $ out opts
     freqs <- foldM updateFreqs Freq.empty inPaths
-    IO.hPrint outFile $ fromJust $ buildCode freqs
+    let freqs' = Freq.incrementFromFold printableChars freqs
+    IO.hPrint outFile $ fromJust $ buildCode freqs'
     IO.hClose outFile
+
+printableChars :: String
+printableChars = "\t\r\n" ++ [' ' .. '~']
 
 openOutFile :: String -> IO IO.Handle
 openOutFile "-" = return IO.stdout
