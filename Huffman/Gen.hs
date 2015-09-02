@@ -10,21 +10,23 @@ import System.Console.CmdLib ((%>))
 import Control.Monad (foldM)
 
 data GenOptions = GenOptions {
-  out :: String
+  out :: String,
+  input :: [String]
 } deriving (Show, Eq, CL.Typeable, CL.Data)
 
 instance CL.Attributes GenOptions where
   attributes _ = CL.group "Options" [
-    out %> [ CL.Short "o", CL.Long ["out"], CL.Help "The file to output the coding to.", CL.ArgHelp "file", CL.Default "-" ]
+    out %> [ CL.Short "o", CL.Long ["out"], CL.Help "The file to output the coding to.", CL.ArgHelp "file", CL.Default "-" ],
+    input %> [ CL.Extra True, CL.ArgHelp "files" ]
     ]
 
 instance CL.RecordCommand GenOptions where
   mode_summary _ = "Generate a Huffman coding from sample text."
 
-  run' opts [] = CL.run' opts ["-"]
-  run' opts inPaths = do
+  run' opts@(GenOptions { input = [] }) args = CL.run' opts {input = ["-"]} args
+  run' opts _ = do
     outFile <- openOutFile $ out opts
-    freqs <- foldM updateFreqs Freq.empty inPaths
+    freqs <- foldM updateFreqs Freq.empty $ input opts
     let freqs' = Freq.incrementFromFold printableChars freqs
     IO.hPrint outFile $ fromJust $ buildCode freqs'
     IO.hClose outFile
